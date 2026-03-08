@@ -78,6 +78,7 @@ const Signup = () => {
           placeholder="Email"
           className="w-full border p-2 mb-3 rounded"
           onChange={handleChange}
+        //   hi 
         />
 
         <input
