@@ -1,66 +1,76 @@
-import { useState } from "react";
-import { saveUser, getUser } from "../utils/storage";
+import React, { useState } from "react";
+import useAuth from "../hooks/Auth";
+import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
-const useAuth = () => {
+const Signup = () => {
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { signup, loading, error } = useAuth();
+  const navigate = useNavigate();
 
-  const signup = async (data) => {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
 
-    try {
-
-      setLoading(true);
-      setError(null);
-
-      saveUser(data);
-
-    } catch (err) {
-
-      setError("Signup failed");
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const login = async (email, password) => {
-
-    try {
-
-      setLoading(true);
-      setError(null);
-
-      const user = getUser();
-
-      if (!user) {
-        throw new Error("User not found");
-      }
-
-      if (email !== user.email || password !== user.password) {
-        throw new Error("Invalid credentials");
-      }
-
-      return true;
-
-    } catch (err) {
-
-      setError(err.message);
-      return false;
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
+  const handleSubmit = async () => {
+    await signup(form);
+    navigate("/login");
   };
 
-  return { signup, login, loading, error };
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
 
+      <div className="bg-white p-6 rounded-xl w-[360px] shadow">
+
+        <h2 className="text-xl font-bold mb-4">
+          Signup
+        </h2>
+
+        <input
+          name="name"
+          placeholder="Name"
+          className="w-full border p-2 mb-3 rounded"
+          onChange={handleChange}
+        />
+
+        <input
+          name="email"
+          placeholder="Email"
+          className="w-full border p-2 mb-3 rounded"
+          onChange={handleChange}
+        />
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          className="w-full border p-2 mb-3 rounded"
+          onChange={handleChange}
+        />
+
+        {error && (
+          <p className="text-red-500 text-sm mb-2">
+            {error}
+          </p>
+        )}
+
+        <Button onClick={handleSubmit}>
+          {loading ? "Creating..." : "Create Account"}
+        </Button>
+
+      </div>
+
+    </div>
+  );
 };
 
-export default useAuth;
+export default Signup;
