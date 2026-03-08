@@ -1,70 +1,70 @@
 import { useState } from "react";
-import { saveUser, getUser } from "../utils/storage";
+import { saveUser, getUser } from "../utils/storage.js";
 
 const useAuth = () => {
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const signup = async (userData) => {
+  const signup = async (userData) => {
 
-        try {
+    try {
 
-            setLoading(true);
-            setError(null);
+      setLoading(true);
+      setError(null);
 
-            saveUser(userData);
+      saveUser(userData);
 
-        } catch (err) {
+    } catch (err) {
 
-            setError("Signup failed");
+      setError("Signup failed");
 
-        } finally {
+    } finally {
 
-            setLoading(false);
+      setLoading(false);
 
-        }
+    }
 
-    };
+  };
 
-    const login = async (email, password) => {
+  const login = async (email, password) => {
 
-        try {
+    try {
 
-            setLoading(true);
-            setError(null);
+      setLoading(true);
+      setError(null);
 
-            const user = getUser();
+      const user = getUser();
 
-            if (!user) {
-                throw new Error("User not found");
-            }
+      if (!user) {
+        throw new Error("User not found");
+      }
 
-            if (email !== user.email || password !== user.password) {
-                throw new Error("Invalid credentials");
-            }
+      if (email !== user.email || password !== user.password) {
+        throw new Error("Invalid credentials");
+      }
 
-            return true;
+      return true;
 
-        } catch (err) {
+    } catch (err) {
 
-            setError(err.message);
-            return false;
+      setError(err?.message || "Login failed");
+      return false;
 
-        } finally {
+    } finally {
 
-            setLoading(false);
+      setLoading(false);
 
-        }
+    }
 
-    };
+  };
 
-    return {
-        signup,
-        login,
-        loading,
-        error
-    };
+  return {
+    signup,
+    login,
+    loading,
+    error
+  };
 
 };
 
